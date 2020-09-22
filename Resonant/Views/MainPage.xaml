@@ -1,0 +1,97 @@
+﻿<Page
+    x:Class="Resonant.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Resonant"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DataContext="{d:DesignData MainPageViewModel}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <controls:TabView Grid.Row="0">
+            <controls:TabViewItem Header="Currently Playing">
+                <ListView Name="CurrentlyPlaying"/>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Music Library">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <SearchBox Grid.Row="0"/>
+                    <ScrollContentPresenter Grid.Row="1">
+                        <Button Content="))))))"/>
+                    </ScrollContentPresenter>
+                </Grid>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Settings">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl Grid.Column="0" Content="Audio Output Device" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <ComboBox Grid.Column="1" Name="AudioDeviceSelector" SelectionChanged="AudioDeviceSelector_SelectionChanged"/>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl Grid.Column="0" Content="Playback Speed" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="4.0" Minimum="0.1" StepFrequency="0.05" Value="1.0" ValueChanged="Speed_Slider_ValueChanged"/>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl Grid.Column="0" Content="Volume" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="100" Minimum="0" StepFrequency="1" Value="100" ValueChanged="Volume_Slider_ValueChanged"/>
+                        </Grid>
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl Grid.Column="0" Content="Audio Balance" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="1" Minimum="-1" StepFrequency="0.1" Value="0" ValueChanged="AudioBalance_Slider_ValueChanged"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </controls:TabViewItem>
+        </controls:TabView>
+        <ContentControl Grid.Row="1" Margin="10, 5, 20, 0" Content="{Binding CurrentlyPlaying}" FontSize="14" AllowFocusOnInteraction="False" Opacity="0.75"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress}" IsEnabled="false" Minimum="0" Maximum="100"/>
+            <ContentControl Grid.Column="1" Margin="5" Content="{Binding TimeStamp}" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" FontWeight="Bold" Content="+" Click="Add_Music_Button_Click"/>
+            <Button Grid.Column="3" FontWeight="Bold" Content="&#x23EF;" Click="Play_Pause_Button_Click"/>
+        </Grid>
+    </Grid>
+</Page>
