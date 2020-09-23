@@ -15,12 +15,29 @@ namespace Resonant.Player {
         public StorageFile StorageFile { get; }
         public BitmapImage Thumbnail { get; private set; }
 
+        public BitmapImage ThumbnailBig { get; private set; }
+
         public bool CurrentlyPlaying
         {
             get => _currentlyPlaying;
             set
             {
                 _currentlyPlaying = value;
+                if (value) {
+                    Task.Run(() => {
+                        using var thumbnail = StorageFile.GetThumbnailAsync(ThumbnailMode.MusicView, 300).GetAwaiter().GetResult();
+                        if (thumbnail == null) return;
+                        DispatcherHelper.ExecuteOnUIThreadAsync(() => {
+                            ThumbnailBig = new BitmapImage();
+                            ThumbnailBig.SetSource(thumbnail);
+                        }).GetAwaiter().GetResult();
+                        OnPropertyChanged(nameof(ThumbnailBig));
+                    });
+                }
+                else {
+                    ThumbnailBig = null;
+                    OnPropertyChanged(nameof(ThumbnailBig));
+                }
                 OnPropertyChanged();
             }
         }
@@ -43,15 +60,13 @@ namespace Resonant.Player {
 
             Task.Run(() => {
                 using var thumbnail = file.GetThumbnailAsync(ThumbnailMode.MusicView, 45).GetAwaiter().GetResult();
-                if (thumbnail != null) {
-                    DispatcherHelper.ExecuteOnUIThreadAsync(() => {
-                        Thumbnail = new BitmapImage();
-                        Thumbnail.SetSource(thumbnail);
-                    }).GetAwaiter().GetResult();
-                    OnPropertyChanged(nameof(Thumbnail));
-                }
+                if (thumbnail == null) return;
+                DispatcherHelper.ExecuteOnUIThreadAsync(() => {
+                    Thumbnail = new BitmapImage();
+                    Thumbnail.SetSource(thumbnail);
+                }).GetAwaiter().GetResult();
+                OnPropertyChanged(nameof(Thumbnail));
             });
-
             Task.Run(() => {
                 _properties = file.Properties.GetMusicPropertiesAsync().GetAwaiter().GetResult();
                 OnPropertyChanged(nameof(Title));
