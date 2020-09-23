@@ -2,13 +2,22 @@
     x:Class="Resonant.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Resonant"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:viewModels="using:Resonant.ViewModels"
+    xmlns:local="using:Resonant"
+    xmlns:player="using:Resonant.Player"
+    xmlns:valueConverters="using:Resonant.ValueConverters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DataContext="{d:DesignData MainPageViewModel}">
 
+    <Page.Resources>
+        <valueConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Page.Resources>
+    <Page.DataContext>
+        <viewModels:MainPageViewModel/>
+    </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,35 +25,77 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <controls:TabView Grid.Row="0">
-            <controls:TabViewItem Header="Currently Playing">
+            <controls:TabViewItem Header="Current Playlist">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ListView Grid.Column="0" Name="CurrentlyPlaying"/>
+                    <ListView Grid.Column="0" Name="CurrentlyPlaying" ItemsSource="{Binding CurrentMusicPlaylist, Mode=OneWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="player:MusicFile">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <AppBarButton Grid.Column="0" IsEnabled="False" Visibility="{Binding CurrentlyPlaying, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Icon="Play" Label="Playing"/>
+                                    <Image Grid.Column="1" Name="Thumbnail" Source="{x:Bind Thumbnail, Mode=OneWay}"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentControl Grid.Column="0" Name="Title" Content="{x:Bind Title, Mode=OneWay}" FontWeight="Bold" FontSize="20" Opacity="1" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                            <ContentControl Grid.Column="1" Name="Artist" Content="{x:Bind Artist, Mode=OneWay}" FontWeight="Bold" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                            <ContentControl Grid.Column="2" Name="Album" Content="{x:Bind Album, Mode=OneWay}" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentControl Grid.Column="0" Name="Path" Content="{x:Bind StorageFile.Path, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <ContentControl Grid.Column="1" Name="Bitrate" Content="{x:Bind Bitrate, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <ContentControl Grid.Column="2" Name="Duration" Content="{x:Bind Duration, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <AppBarButton Grid.Row="0" Click="Add_Music_Button_Click" Margin="5" Icon="Add" Label="Add Songs"/>
-                        <AppBarButton Grid.Row="1" Margin="5" Icon="Shuffle" Label="Shuffle"/>
+                        <AppBarButton Grid.Row="1" Margin="5" Icon="Shuffle" Label="Shuffle" Click="Shuffle_ButtonBase_OnClick"/>
+                        <AppBarButton Grid.Row="2" Margin="5" Icon="List" Label="Sort" Click="Sort_ButtonBase_OnClick"/>
+                        <AppBarToggleButton Grid.Row="3" Margin="5" Icon="RepeatAll" Label="Repeat All" IsChecked="{Binding RepeatAll, Mode=TwoWay}"/>
+                        <AppBarToggleButton Grid.Row="4" Margin="5" Icon="RepeatOne" Label="Repeat One" Checked="RepeatOne_AppBarToggleButton_Checked" Unchecked="RepeatOne_AppBarToggleButton_Unchecked"/>
+                        <AppBarButton Grid.Row="5" Margin="5" Icon="Delete" Label="Clear All" Click="ClearAll_AppBarToggleButton_OnClick"/>
                     </Grid>
                 </Grid>
             </controls:TabViewItem>
-            <controls:TabViewItem Header="Music Library">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <SearchBox Grid.Row="0"/>
-                    <ScrollContentPresenter Grid.Row="1">
-                        <Button Content="))))))"/>
-                    </ScrollContentPresenter>
-                </Grid>
+            <controls:TabViewItem Header="Current Song">
+
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Playlists">
+
             </controls:TabViewItem>
             <controls:TabViewItem Header="Settings">
                 <Grid>
@@ -95,7 +146,7 @@
                 </Grid>
             </controls:TabViewItem>
         </controls:TabView>
-        <ContentControl Grid.Row="1" Margin="10, 5, 20, 0" Content="{Binding CurrentlyPlaying}" FontSize="14" AllowFocusOnInteraction="False" Opacity="0.75"/>
+        <ContentControl Grid.Row="1" Margin="10, 5, 20, 0" Content="{Binding CurrentlyPlaying, Mode=OneWay}" FontSize="14" AllowFocusOnInteraction="False" Opacity="0.75"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -105,8 +156,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress}" IsEnabled="true" Minimum="0" Maximum="100"/>
-            <ContentControl Grid.Column="1" Margin="5" Content="{Binding TimeStamp}" VerticalAlignment="Center"/>
+            <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress, Mode=OneWay}" IsEnabled="true" Minimum="0" Maximum="100"/>
+            <ContentControl Grid.Column="1" Margin="5" Content="{Binding TimeStamp, Mode=OneWay}" VerticalAlignment="Center"/>
             <AppBarButton Grid.Column="2" Margin="5" Label="Previous" Icon="Previous" Click="Previous_Button_Click"/>
             <AppBarButton Grid.Column="3" Margin="5" Label="Play/Pause" Icon="Play" Click="Play_Pause_Button_Click"/>
             <AppBarButton Grid.Column="4" Margin="5" Label="Next" Icon="Next" Click="Next_Button_Click"/>

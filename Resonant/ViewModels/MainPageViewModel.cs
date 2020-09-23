@@ -1,16 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Navigation;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Resonant.Annotations;
+using Resonant.Player;
 
 namespace Resonant.ViewModels {
     public class MainPageViewModel : INotifyPropertyChanged {
+
+        public bool RepeatAll
+        {
+            get => _repeatAll;
+            set
+            {
+                _repeatAll = value;
+                OnPropertyChanged();
+            }
+        }
 
         public double Progress => _currentSecond / _musicLengthSeconds * 100;
 
@@ -66,8 +73,11 @@ namespace Resonant.ViewModels {
             }
         }
 
-        private double _musicLengthSeconds;
-        private double _currentSecond;
+        public ObservableCollection<MusicFile> CurrentMusicPlaylist => MusicController.GetMusicController().GetPlaylist().Music;
+
+        private bool _repeatAll = false;
+        private double _musicLengthSeconds = 60;
+        private double _currentSecond = 0;
         private string _currentlyPlaying = "Nothing is playing...";
 
         public event PropertyChangedEventHandler PropertyChanged;

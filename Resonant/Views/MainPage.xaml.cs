@@ -93,5 +93,25 @@ namespace Resonant
         private void Next_Button_Click(object sender, RoutedEventArgs e) {
             MusicController.GetMusicController().NextTrack();
         }
+
+        private void RepeatOne_AppBarToggleButton_Checked(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().RepeatOne(true);
+        }
+
+        private void RepeatOne_AppBarToggleButton_Unchecked(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().RepeatOne(false);
+        }
+
+        private void Shuffle_ButtonBase_OnClick(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().Shuffle();
+        }
+
+        private void ClearAll_AppBarToggleButton_OnClick(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().ClearPlaylist();
+        }
+
+        private void Sort_ButtonBase_OnClick(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().GetPlaylist().Sort();
+        }
     }
 }
