@@ -17,7 +17,22 @@
         </Grid.RowDefinitions>
         <controls:TabView Grid.Row="0">
             <controls:TabViewItem Header="Currently Playing">
-                <ListView Name="CurrentlyPlaying"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Grid.Column="0" Name="CurrentlyPlaying"/>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <AppBarButton Grid.Row="0" Click="Add_Music_Button_Click" Margin="5" Icon="Add" Label="Add Songs"/>
+                        <AppBarButton Grid.Row="1" Margin="5" Icon="Shuffle" Label="Shuffle"/>
+                    </Grid>
+                </Grid>
             </controls:TabViewItem>
             <controls:TabViewItem Header="Music Library">
                 <Grid>
@@ -87,11 +102,14 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress}" IsEnabled="false" Minimum="0" Maximum="100"/>
+            <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress}" IsEnabled="true" Minimum="0" Maximum="100"/>
             <ContentControl Grid.Column="1" Margin="5" Content="{Binding TimeStamp}" VerticalAlignment="Center"/>
-            <Button Grid.Column="2" FontWeight="Bold" Content="+" Click="Add_Music_Button_Click"/>
-            <Button Grid.Column="3" FontWeight="Bold" Content="&#x23EF;" Click="Play_Pause_Button_Click"/>
+            <AppBarButton Grid.Column="2" Margin="5" Label="Previous" Icon="Previous" Click="Previous_Button_Click"/>
+            <AppBarButton Grid.Column="3" Margin="5" Label="Play/Pause" Icon="Play" Click="Play_Pause_Button_Click"/>
+            <AppBarButton Grid.Column="4" Margin="5" Label="Next" Icon="Next" Click="Next_Button_Click"/>
         </Grid>
     </Grid>
 </Page>

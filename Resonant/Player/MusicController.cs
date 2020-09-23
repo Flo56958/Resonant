@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Enumeration;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Streams;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -147,14 +151,14 @@ namespace Resonant.Player {
             Grid.SetRow(grid3, 1);
             grid.Children.Add(grid3);
 
-            using var thumbnail = file.GetThumbnailAsync(ThumbnailMode.MusicView).GetAwaiter().GetResult();
-            if (thumbnail != null && thumbnail.Type == ThumbnailType.Icon) {
+            using var thumbnail = file.GetThumbnailAsync(ThumbnailMode.ListView).GetAwaiter().GetResult();
+            if (thumbnail != null) {
                 var bitmapImage = new BitmapImage();
                 bitmapImage.SetSource(thumbnail);
                 var image = new Image() {
                     Source = bitmapImage,
                 };
-
+            
                 Grid.SetColumn(image, 0);
                 upperGrid.Children.Add(image);
             }
@@ -185,16 +189,7 @@ namespace Resonant.Player {
         }
 
         private void MediaPlayerOnMediaEnded(MediaPlayer sender, object args) {
-            if (_musicQueue.TryDequeue(out var file)) {
-                _currentFile = file;
-                _currentMusic = file.Properties.GetMusicPropertiesAsync().GetAwaiter().GetResult();
-                _mediaPlayer.SetFileSource(file);
-                _mediaPlayer.Play();
-            }
-            else {
-                MainPage.Model.CurrentSeconds = 0;
-                MainPage.Model.CurrentlyPlaying = "Nothing is playing...";
-            }
+            NextTrack();
         }
 
         public void TogglePlayPause() {
@@ -245,6 +240,25 @@ namespace Resonant.Player {
 
         public void SetAudioBalance(double value) {
             _mediaPlayer.AudioBalance = value;
+        }
+
+        public void NextTrack() {
+            if (_musicQueue.TryDequeue(out var file)) {
+                _currentFile = file;
+                _currentMusic = file.Properties.GetMusicPropertiesAsync().GetAwaiter().GetResult();
+                _mediaPlayer.SetFileSource(file);
+                _mediaPlayer.Play();
+            } else {
+                _currentFile = null;
+                _currentMusic = null;
+                _mediaPlayer.Source = null;
+                MainPage.Model.CurrentSeconds = 0;
+                MainPage.Model.CurrentlyPlaying = "Nothing is playing...";
+            }
+        }
+
+        public void PreviousTrack() {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -83,6 +84,14 @@ namespace Resonant
 
         private void AudioBalance_Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e) {
             MusicController.GetMusicController().SetAudioBalance(e.NewValue);
+        }
+
+        private void Previous_Button_Click(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().PreviousTrack();
+        }
+
+        private void Next_Button_Click(object sender, RoutedEventArgs e) {
+            MusicController.GetMusicController().NextTrack();
         }
     }
 }
