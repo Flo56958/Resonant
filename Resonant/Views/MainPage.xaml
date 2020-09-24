@@ -53,9 +53,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <ContentControl Grid.Column="0" Name="Title" Content="{x:Bind Title, Mode=OneWay}" FontWeight="Bold" FontSize="20" Opacity="1" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                                            <ContentControl Grid.Column="1" Name="Artist" Content="{x:Bind Artist, Mode=OneWay}" FontWeight="Bold" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                                            <ContentControl Grid.Column="2" Name="Album" Content="{x:Bind Album, Mode=OneWay}" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="0" Name="Title" Text="{x:Bind Title, Mode=OneWay}" FontWeight="Bold" FontSize="20" Opacity="1" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="1" Name="Artist" Text="{x:Bind Artist, Mode=OneWay}" FontWeight="Bold" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="2" Name="Album" Text="{x:Bind Album, Mode=OneWay}" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
                                         </Grid>
                                         <Grid Grid.Row="1">
                                             <Grid.ColumnDefinitions>
@@ -63,9 +63,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <ContentControl Grid.Column="0" Name="Path" Content="{x:Bind StorageFile.Path, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                            <ContentControl Grid.Column="1" Name="Bitrate" Content="{x:Bind Bitrate, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                            <ContentControl Grid.Column="2" Name="Duration" Content="{x:Bind Duration, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="0" Name="Path" Text="{x:Bind StorageFile.Path, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="1" Name="Bitrate" Text="{x:Bind Bitrate, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="2" Name="Duration" Text="{x:Bind Duration, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -98,16 +98,22 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="{Binding CurrentMusicFile.ThumbnailBig}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                    <Grid Grid.Column="0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <ContentControl Grid.Row="1" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding CurrentMusicFile.Artist, Mode=OneWay}" FontWeight="Bold" FontSize="20"/>
-                        <ContentControl Grid.Row="2" Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{Binding CurrentMusicFile.Title, Mode=OneWay}" FontWeight="ExtraBold" FontSize="35"/>
-                        <ContentControl Grid.Row="3" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left" Content="{Binding CurrentMusicFile.Album, Mode=OneWay}" FontWeight="Bold" FontSize="20"/>
+                        <controls:DropShadowPanel Grid.Row="1"  Grid.Column="0" BlurRadius="4.0" ShadowOpacity="0.7" OffsetX="5.0" OffsetY="5.0" Color="Black">
+                            <TextBlock Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding CurrentMusicFile.Artist, Mode=OneWay}" FontWeight="Bold" FontSize="20" />
+                        </controls:DropShadowPanel>
+                        <controls:DropShadowPanel Grid.Row="2" Grid.Column="0" BlurRadius="4.0" ShadowOpacity="0.7" OffsetX="5.0" OffsetY="5.0" Color="Black">
+                            <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding CurrentMusicFile.Title, Mode=OneWay}" FontWeight="ExtraBold" FontSize="35"/>
+                        </controls:DropShadowPanel>
+                        <controls:DropShadowPanel Grid.Row="3" Grid.Column="0" BlurRadius="4.0" ShadowOpacity="0.7" OffsetX="5.0" OffsetY="5.0" Color="Black">
+                            <TextBlock Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding CurrentMusicFile.Album, Mode=OneWay}" FontWeight="Bold" FontSize="20"/>
+                        </controls:DropShadowPanel>
                     </Grid>
                 </Grid>
             </controls:TabViewItem>
@@ -132,7 +138,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0" Content="Audio Output Device" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <TextBlock Grid.Column="0" Text="Audio Output Device" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
                             <ComboBox Grid.Column="1" Name="AudioDeviceSelector" SelectionChanged="AudioDeviceSelector_SelectionChanged"/>
                         </Grid>
                         <Grid Grid.Row="1">
@@ -140,7 +146,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0" Content="Playback Speed" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <TextBlock Grid.Column="0" Text="Playback Speed" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
                             <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="4.0" Minimum="0.1" StepFrequency="0.05" Value="1.0" ValueChanged="Speed_Slider_ValueChanged"/>
                         </Grid>
                         <Grid Grid.Row="2">
@@ -148,7 +154,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0" Content="Volume" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <TextBlock Grid.Column="0" Text="Volume" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
                             <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="100" Minimum="0" StepFrequency="1" Value="100" ValueChanged="Volume_Slider_ValueChanged"/>
                         </Grid>
                         <Grid Grid.Row="3">
@@ -156,14 +162,14 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0" Content="Audio Balance" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
+                            <TextBlock Grid.Column="0" Text="Audio Balance" VerticalAlignment="Center" Margin="20, 0, 20, 0"/>
                             <Slider Grid.Column="1" Margin="0,0,20,0" Maximum="1" Minimum="-1" StepFrequency="0.1" Value="0" ValueChanged="AudioBalance_Slider_ValueChanged"/>
                         </Grid>
                     </Grid>
                 </Grid>
             </controls:TabViewItem>
         </controls:TabView>
-        <ContentControl Grid.Row="1" Margin="10, 5, 20, 0" Content="{Binding CurrentlyPlaying, Mode=OneWay}" FontSize="14" AllowFocusOnInteraction="False" Opacity="0.75"/>
+        <TextBlock Grid.Row="1" Margin="10, 5, 20, 0" Text="{Binding CurrentlyPlaying, Mode=OneWay}" FontSize="14" AllowFocusOnInteraction="False" Opacity="0.75"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -174,7 +180,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ProgressBar Grid.Column="0" Margin="10" VerticalAlignment="Stretch" Value="{Binding Progress, Mode=OneWay}" IsEnabled="true" Minimum="0" Maximum="100"/>
-            <ContentControl Grid.Column="1" Margin="5" Content="{Binding TimeStamp, Mode=OneWay}" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Margin="5" Text="{Binding TimeStamp, Mode=OneWay}" VerticalAlignment="Center"/>
             <AppBarButton Grid.Column="2" Margin="5" Label="Previous" Icon="Previous" Click="Previous_Button_Click"/>
             <AppBarButton Grid.Column="3" Margin="5" Label="Play/Pause" Icon="Play" Click="Play_Pause_Button_Click"/>
             <AppBarButton Grid.Column="4" Margin="5" Label="Next" Icon="Next" Click="Next_Button_Click"/>
