@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Devices;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,6 +33,7 @@ namespace Resonant
 
         public MainPage()
         {
+            DownloadsFolder.CreateFileAsync("MainPage Started.txt");
             InitializeComponent();
             _init_AudioDeviceSelector();
             if (DataContext == null) {
@@ -40,6 +42,7 @@ namespace Resonant
             Model = (MainPageViewModel) DataContext;
             Window = this;
             CurrentlyPlayingListView = CurrentlyPlaying;
+            DownloadsFolder.CreateFileAsync("MainPage Loaded.txt");
         }
 
         private async void _init_AudioDeviceSelector() {
@@ -66,7 +69,7 @@ namespace Resonant
 
             var files = await openPicker.PickMultipleFilesAsync();
             if (files != null) {
-                MusicController.GetMusicController().AddMusic(files);
+                MusicController.GetMusicController().AddMusic(files.ToList());
             }
         }
 

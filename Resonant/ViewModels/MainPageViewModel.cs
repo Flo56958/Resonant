@@ -63,16 +63,6 @@ namespace Resonant.ViewModels {
             }
         }
 
-        public string CurrentlyPlaying
-        {
-            get => _currentlyPlaying;
-            set
-            {
-                _currentlyPlaying = value;
-                OnPropertyChanged();
-            }
-        }
-
         public MusicFile CurrentMusicFile
         {
             get => _currentMusicFile;
@@ -85,11 +75,21 @@ namespace Resonant.ViewModels {
 
         public ObservableCollection<MusicFile> CurrentMusicPlaylist => MusicController.GetMusicController().GetPlaylist().Music;
 
-        private bool _repeatAll = false;
+        public string APIKey
+        {
+            get => _APIKey;
+            set
+            {
+                _APIKey = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _repeatAll;
         private double _musicLengthSeconds = 60;
-        private double _currentSecond = 0;
-        private string _currentlyPlaying = "Nothing is playing...";
+        private double _currentSecond;
         private MusicFile _currentMusicFile;
+        private string _APIKey;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

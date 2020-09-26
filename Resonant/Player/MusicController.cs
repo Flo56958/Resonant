@@ -32,11 +32,7 @@ namespace Resonant.Player {
         }
 
         private void MediaPlayerOnSourceChanged(MediaPlayer sender, object args) {
-            var current = _playerPlaylist.GetCurrentIndex();
-            if (current != -1) {
-                var musicFile = _playerPlaylist.Music[current];
-                MainPage.Model.CurrentlyPlaying = musicFile?.Album + " - " + musicFile?.Title;
-            }
+
         }
 
 
@@ -89,7 +85,7 @@ namespace Resonant.Player {
             _mediaPlayer.AudioDevice = selectedDevice;
         }
 
-        public void AddMusic(IReadOnlyList<StorageFile> files) {
+        public void AddMusic(List<StorageFile> files) {
             foreach (var storageFile in files) {
                     _playerPlaylist.AddMusicFile(new MusicFile(storageFile));
             }
@@ -130,21 +126,26 @@ namespace Resonant.Player {
         }
 
         public void PreviousTrack() {
-            var current = _playerPlaylist.GetCurrentIndex();
-            if (current == -1) return;
-            _playerPlaylist.Previous();
-            var previous = _playerPlaylist.GetCurrentIndex();
+            if (_mediaPlayer.PlaybackSession.Position.TotalSeconds <= 5) {
+                var current = _playerPlaylist.GetCurrentIndex();
+                if (current == -1) return;
+                _playerPlaylist.Previous();
+                var previous = _playerPlaylist.GetCurrentIndex();
 
-            if (_mediaPlayer.Source is MediaSource source) {
-                source.Dispose();
+                if (_mediaPlayer.Source is MediaSource source) {
+                    source.Dispose();
+                }
+
+                _playerPlaylist.Music[current].CurrentlyPlaying = false;
+                var mf = _playerPlaylist.Music[previous];
+                mf.CurrentlyPlaying = true;
+                _mediaPlayer.Source = MediaSource.CreateFromStorageFile(mf.StorageFile);
+                _mediaPlayer.Play();
+                MainPage.Model.CurrentMusicFile = mf;
             }
-
-            _playerPlaylist.Music[current].CurrentlyPlaying = false;
-            var mf = _playerPlaylist.Music[previous];
-            mf.CurrentlyPlaying = true;
-            _mediaPlayer.Source = MediaSource.CreateFromStorageFile(mf.StorageFile);
-            _mediaPlayer.Play();
-            MainPage.Model.CurrentMusicFile = mf;
+            else {
+                _mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+            }
         }
 
         public void Stop() {
@@ -155,7 +156,6 @@ namespace Resonant.Player {
             _mediaPlayer.Source = null;
             _playerPlaylist.Music[_playerPlaylist.GetCurrentIndex()].CurrentlyPlaying = false;
             MainPage.Model.CurrentSeconds = 0;
-            MainPage.Model.CurrentlyPlaying = "Nothing is playing...";
             MainPage.Model.CurrentMusicFile = null;
         }
 

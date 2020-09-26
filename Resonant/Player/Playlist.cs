@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using ColorCode.Common;
+using Microsoft.Toolkit.Uwp.Helpers;
 
 namespace Resonant.Player {
     internal class Playlist {
@@ -11,7 +12,7 @@ namespace Resonant.Player {
         private int _current;
 
         public void AddMusicFile(MusicFile file) {
-            Music.Add(file);
+            DispatcherHelper.ExecuteOnUIThreadAsync(() => Music.Add(file));
         }
 
         public void Clear() {

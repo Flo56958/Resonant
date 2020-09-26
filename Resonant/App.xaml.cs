@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Resonant.Player;
 
 namespace Resonant
 {
@@ -73,6 +77,32 @@ namespace Resonant
             }
         }
 
+        // Creates the MainPage if it isn't already created.  Also activates
+        // the window so it takes foreground and input focus.
+        private void EnsurePageCreatedAndActivate() {
+            if (Window.Current.Content == null) {
+                Window.Current.Content = new MainPage();
+            }
+
+            Window.Current.Activate();
+        }
+
+        protected override void OnFileActivated(FileActivatedEventArgs args) {
+            EnsurePageCreatedAndActivate();
+            foreach (var file in args.Files) {
+                if (!file.IsOfType(StorageItemTypes.File)) return;
+                var split = file.Name.Split('.');
+                var extension = split[split.Length - 1];
+                switch (extension.ToLower()) {
+                    case "mp3":
+                        var list = new List<StorageFile> {
+                            (StorageFile)file
+                        };
+                        MusicController.GetMusicController().AddMusic(list);
+                        break;
+                }
+            }
+        }
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>
