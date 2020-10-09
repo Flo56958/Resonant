@@ -68,7 +68,9 @@ namespace Resonant.Player {
                 case MediaPlaybackState.Buffering:
                 default:
                     var idx = _playerPlaylist.GetCurrentIndex();
-                    if (idx == -1) return;
+                    if (idx == -1) {
+                        return;
+                    }
                     if (_mediaPlayer.Source is MediaSource source) {
                         source.Dispose();
                     }
@@ -174,6 +176,12 @@ namespace Resonant.Player {
 
         public Playlist GetPlaylist() {
             return _playerPlaylist;
+        }
+
+        public void Play() {
+            if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing) {
+                TogglePlayPause();
+            }
         }
     }
 }
