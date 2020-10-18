@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -33,7 +34,6 @@ namespace Resonant
 
         public MainPage()
         {
-            DownloadsFolder.CreateFileAsync("MainPage Started.txt");
             InitializeComponent();
             _init_AudioDeviceSelector();
             if (DataContext == null) {
@@ -42,7 +42,6 @@ namespace Resonant
             Model = (MainPageViewModel) DataContext;
             Window = this;
             CurrentlyPlayingListView = CurrentlyPlaying;
-            DownloadsFolder.CreateFileAsync("MainPage Loaded.txt");
         }
 
         private async void _init_AudioDeviceSelector() {
@@ -69,7 +68,8 @@ namespace Resonant
 
             var files = await openPicker.PickMultipleFilesAsync();
             if (files != null) {
-                MusicController.GetMusicController().AddMusic(files.ToList());
+                var list = files.Select(storageFile => new MusicFile(storageFile)).ToList();
+                MusicController.GetMusicController().AddMusic(list);
             }
         }
 
@@ -115,6 +115,14 @@ namespace Resonant
 
         private void Sort_ButtonBase_OnClick(object sender, RoutedEventArgs e) {
             MusicController.GetMusicController().GetPlaylist().Sort();
+        }
+
+        private void Add_YTMusic_Button_Click(object sender, RoutedEventArgs e) {
+            var id = Clipboard.GetContent().GetTextAsync().GetAwaiter().GetResult();
+            if (id.Length != 11) return;
+            var list = new List<MusicFile>();
+            list.Add(new MusicFile(id));
+            MusicController.GetMusicController().AddMusic(list);
         }
     }
 }

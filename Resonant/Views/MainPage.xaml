@@ -63,7 +63,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Name="Path" Text="{x:Bind StorageFile.Path, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Column="0" Name="Path" Text="{x:Bind Path, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                             <TextBlock Grid.Column="1" Name="Bitrate" Text="{x:Bind Bitrate, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                             <TextBlock Grid.Column="2" Name="Duration" Text="{x:Bind Duration, Mode=OneWay}" FontSize="10" Opacity="0.5" Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                         </Grid>
@@ -80,14 +80,16 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <AppBarButton Grid.Row="0" Click="Add_Music_Button_Click" Margin="5" Icon="Add" Label="Add Songs"/>
-                        <AppBarButton Grid.Row="1" Margin="5" Icon="Shuffle" Label="Shuffle" Click="Shuffle_ButtonBase_OnClick"/>
-                        <AppBarButton Grid.Row="2" Margin="5" Icon="List" Label="Sort" Click="Sort_ButtonBase_OnClick"/>
-                        <AppBarToggleButton Grid.Row="3" Margin="5" Icon="RepeatAll" Label="Repeat All" IsChecked="{Binding RepeatAll, Mode=TwoWay}"/>
-                        <AppBarToggleButton Grid.Row="4" Margin="5" Icon="RepeatOne" Label="Repeat One" Checked="RepeatOne_AppBarToggleButton_Checked" Unchecked="RepeatOne_AppBarToggleButton_Unchecked"/>
-                        <AppBarButton Grid.Row="5" Margin="5" Icon="Delete" Label="Clear All" Click="ClearAll_AppBarToggleButton_OnClick"/>
+                        <AppBarButton Grid.Row="1" Click="Add_YTMusic_Button_Click" Margin="5" Icon="Add" Label="Add YT Songs"/>
+                        <AppBarButton Grid.Row="2" Margin="5" Icon="Shuffle" Label="Shuffle" Click="Shuffle_ButtonBase_OnClick"/>
+                        <AppBarButton Grid.Row="3" Margin="5" Icon="List" Label="Sort" Click="Sort_ButtonBase_OnClick"/>
+                        <AppBarToggleButton Grid.Row="4" Margin="5" Icon="RepeatAll" Label="Repeat All" IsChecked="{Binding RepeatAll, Mode=TwoWay}"/>
+                        <AppBarToggleButton Grid.Row="5" Margin="5" Icon="RepeatOne" Label="Repeat One" Checked="RepeatOne_AppBarToggleButton_Checked" Unchecked="RepeatOne_AppBarToggleButton_Unchecked"/>
+                        <AppBarButton Grid.Row="6" Margin="5" Icon="Delete" Label="Clear All" Click="ClearAll_AppBarToggleButton_OnClick"/>
                     </Grid>
                 </Grid>
             </controls:TabViewItem>
@@ -111,7 +113,9 @@
                             <TextBlock Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding CurrentMusicFile.Album, Mode=OneWay}" FontWeight="Bold" FontSize="20"/>
                         </controls:DropShadowPanel>
                     </Grid>
-                    <TextBlock Text="{Binding CurrentMusicFile.Lyrics, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock Text="{Binding CurrentMusicFile.Lyrics, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right"/>
+                    </ScrollViewer>
                 </Grid>
             </controls:TabViewItem>
             <controls:TabViewItem Header="Playlists">

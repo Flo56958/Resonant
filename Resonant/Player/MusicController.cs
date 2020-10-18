@@ -77,7 +77,7 @@ namespace Resonant.Player {
 
                     var mf = _playerPlaylist.Music[idx];
                     mf.CurrentlyPlaying = true;
-                    _mediaPlayer.Source = MediaSource.CreateFromStorageFile(mf.StorageFile);
+                    _mediaPlayer.Source = mf.GetSource();
                     MainPage.Model.CurrentMusicFile = mf;
                     break;
             }
@@ -87,9 +87,9 @@ namespace Resonant.Player {
             _mediaPlayer.AudioDevice = selectedDevice;
         }
 
-        public void AddMusic(List<StorageFile> files) {
-            foreach (var storageFile in files) {
-                    _playerPlaylist.AddMusicFile(new MusicFile(storageFile));
+        public void AddMusic(List<MusicFile> files) {
+            foreach (var file in files) {
+                    _playerPlaylist.AddMusicFile(file);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Resonant.Player {
                 }
                 var mf = _playerPlaylist.Music[next];
                 mf.CurrentlyPlaying = true;
-                _mediaPlayer.Source = MediaSource.CreateFromStorageFile(mf.StorageFile);
+                _mediaPlayer.Source = mf.GetSource();
                 _mediaPlayer.Play();
                 MainPage.Model.CurrentMusicFile = mf;
             } else {
@@ -141,7 +141,7 @@ namespace Resonant.Player {
                 _playerPlaylist.Music[current].CurrentlyPlaying = false;
                 var mf = _playerPlaylist.Music[previous];
                 mf.CurrentlyPlaying = true;
-                _mediaPlayer.Source = MediaSource.CreateFromStorageFile(mf.StorageFile);
+                _mediaPlayer.Source = mf.GetSource();
                 _mediaPlayer.Play();
                 MainPage.Model.CurrentMusicFile = mf;
             }

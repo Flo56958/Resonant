@@ -79,8 +79,8 @@ namespace Resonant
                 var extension = split[split.Length - 1];
                 switch (extension.ToLower()) {
                     case "mp3":
-                        var list = new List<StorageFile> {
-                            (StorageFile)file
+                        var list = new List<MusicFile> {
+                            new MusicFile((StorageFile)file)
                         };
                         MusicController.GetMusicController().AddMusic(list);
                         break;
