@@ -120,6 +120,10 @@ namespace Resonant.Player {
                 var mf = _playerPlaylist.Music[next];
                 mf.CurrentlyPlaying = true;
                 _mediaPlayer.Source = mf.GetSource();
+                if (_mediaPlayer.Source == null) {
+                    NextTrack();
+                    return;
+                }
                 _mediaPlayer.Play();
                 MainPage.Model.CurrentMusicFile = mf;
             } else {

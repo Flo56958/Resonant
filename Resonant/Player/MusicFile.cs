@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -200,9 +201,12 @@ namespace Resonant.Player {
                     case MusicFileType.YouTube:
                         var data = GetYTJSONData();
                         Title = data["videoDetails"]["title"].ToString();
+
                         Duration = new TimeSpan(0, 0,  int.Parse(data["videoDetails"]["lengthSeconds"].ToString())).ToString().Split(".")[0];
                         Artist = data["videoDetails"]["author"].ToString();
-                        Bitrate = data["videoDetails"]["viewCount"].ToString() + " views";
+
+                        var nfi = new NumberFormatInfo { NumberDecimalSeparator = ",", NumberGroupSeparator = "." };
+                        Bitrate = int.Parse(data["videoDetails"]["viewCount"].ToString()).ToString("#,##0", nfi) + " views";
                         Album = "";
                         Lyrics = data["videoDetails"]["shortDescription"].ToString();
 
@@ -221,6 +225,11 @@ namespace Resonant.Player {
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                using var source = GetSource();
+                if (source == null) {
+                    Title = "[UNAVAILABLE] " + Title;
+                }
             });
         }
 
@@ -231,20 +240,31 @@ namespace Resonant.Player {
                 case MusicFileType.YouTube:
                 {
                     var obj = GetYTJSONData();
-                    var url = obj["streamingData"]["formats"][0]["url"].ToString();
-                    url = HttpUtility.UrlDecode(url).Replace("\\u0026", "&");
+                    if (!obj["playabilityStatus"]["status"].ToString().Equals("OK")) return null;
+                    if (!obj.ContainsKey("streamingData")) return null;
+                    var sdata = (JObject) obj["streamingData"];
+                    if (!sdata.ContainsKey("formats")) return null;
+                    var farr = (JArray) sdata["formats"];
+                    if (farr.Count <= 0) return null;
+                    foreach (var o in farr) {
+                        var jo = (JObject) o;
+                        if (!jo.ContainsKey("url")) continue;
+                        var url = jo["url"].ToString();
+                        url = HttpUtility.UrlDecode(url).Replace("\\u0026", "&");
+                        return MediaSource.CreateFromUri(new Uri(url));
+                    }
 
-                    return MediaSource.CreateFromUri(new Uri(url));
+                    return null;
                 }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private dynamic GetYTJSONData() {
+        private JObject GetYTJSONData() {
             if (Type != MusicFileType.YouTube) return null;
             var webRequest = WebRequest.Create(@"http://youtube.com/get_video_info?video_id=" + _YoutubeID +
-                                               "&asv=2&fmt=18");
+                                               "&asv=2");
 
             using var response = webRequest.GetResponse();
             using var content = response.GetResponseStream();
@@ -258,7 +278,7 @@ namespace Resonant.Player {
                 strContent = strContent.Substring(idx, idx2 - idx + 1);
             }
 
-            return JsonConvert.DeserializeObject(strContent);
+            return (JObject) JsonConvert.DeserializeObject(strContent);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

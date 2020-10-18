@@ -49,6 +49,14 @@
             <uap:Logo>Assets\StoreLogo.png</uap:Logo>
           </uap:FileTypeAssociation>
         </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation" EntryPoint="App.App">
+          <uap:FileTypeAssociation Name=".rsntyt">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.rsntyt</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:Logo>Assets\StoreLogo.png</uap:Logo>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

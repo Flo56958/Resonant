@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -83,6 +87,11 @@ namespace Resonant
                             new MusicFile((StorageFile)file)
                         };
                         MusicController.GetMusicController().AddMusic(list);
+                        break;
+                    case "rsntyt":
+                        var content = FileIO.ReadTextAsync((StorageFile) file).GetAwaiter().GetResult().Split(',');
+                        var list2 = content.Select(s => new MusicFile(s)).ToList();
+                        MusicController.GetMusicController().AddMusic(list2);
                         break;
                 }
             }

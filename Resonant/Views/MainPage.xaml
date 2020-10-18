@@ -113,9 +113,12 @@
                             <TextBlock Margin="3" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding CurrentMusicFile.Album, Mode=OneWay}" FontWeight="Bold" FontSize="20"/>
                         </controls:DropShadowPanel>
                     </Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <TextBlock Text="{Binding CurrentMusicFile.Lyrics, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Right" Margin="0,0,15,0">
+                        <controls:DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.7" OffsetX="2.0" OffsetY="2.0" Color="Black">
+                            <TextBlock Text="{Binding CurrentMusicFile.Lyrics, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Right"/>
+                        </controls:DropShadowPanel>
                     </ScrollViewer>
+
                 </Grid>
             </controls:TabViewItem>
             <controls:TabViewItem Header="Playlists">
