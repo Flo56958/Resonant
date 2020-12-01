@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Windows.Data.Json;
@@ -16,6 +19,8 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Resonant.Annotations;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace Resonant.Player {
     public class MusicFile : INotifyPropertyChanged {
@@ -154,6 +159,9 @@ namespace Resonant.Player {
                     case MusicFileType.File:
                         var properties = _StorageFile.Properties.GetMusicPropertiesAsync().GetAwaiter().GetResult();
                         Title = properties.Title;
+                        if (Title == null || Title == "") {
+                            Title = _StorageFile.DisplayName;
+                        }
                         Album = properties.Album;
                         Artist = properties.Artist;
                         Bitrate = properties.Bitrate + "bps";
@@ -202,7 +210,7 @@ namespace Resonant.Player {
                         var data = GetYTJSONData();
                         Title = data["videoDetails"]["title"].ToString();
 
-                        Duration = new TimeSpan(0, 0,  int.Parse(data["videoDetails"]["lengthSeconds"].ToString())).ToString().Split(".")[0];
+                        Duration = new TimeSpan(0, 0, int.Parse(data["videoDetails"]["lengthSeconds"].ToString())).ToString().Split(".")[0];
                         Artist = data["videoDetails"]["author"].ToString();
 
                         var nfi = new NumberFormatInfo { NumberDecimalSeparator = ",", NumberGroupSeparator = "." };
@@ -210,9 +218,9 @@ namespace Resonant.Player {
                         Album = "";
                         Lyrics = data["videoDetails"]["shortDescription"].ToString();
 
-                        var arr = (JArray) data["videoDetails"]["thumbnail"]["thumbnails"];
+                        var arr = (JArray)data["videoDetails"]["thumbnail"]["thumbnails"];
                         if (arr.Count > 0) {
-                            var littleURL = ((JObject) arr[0])["url"].ToString();
+                            var littleURL = ((JObject)arr[0])["url"].ToString();
                             var bigURL = ((JObject)arr[arr.Count - 1])["url"].ToString();
                             DispatcherHelper.ExecuteOnUIThreadAsync(() =>
                                 Thumbnail = new BitmapImage(new Uri(littleURL)));
@@ -239,7 +247,15 @@ namespace Resonant.Player {
                     return MediaSource.CreateFromStorageFile(_StorageFile);
                 case MusicFileType.YouTube:
                 {
+                    //var client = new YoutubeClient();
+                    //var mani = client.Videos.Streams.GetManifestAsync(_YoutubeID);
+                    //var manii = mani.GetAwaiter().GetResult();
+                    //var urll = manii.GetAudioOnly().First().Url;
+                    //Debug.WriteLine(urll);
+                    //return MediaSource.CreateFromUri(new Uri(urll));
+
                     var obj = GetYTJSONData();
+                    if (!obj.ContainsKey("playabilityStatus")) return null;
                     if (!obj["playabilityStatus"]["status"].ToString().Equals("OK")) return null;
                     if (!obj.ContainsKey("streamingData")) return null;
                     var sdata = (JObject) obj["streamingData"];
@@ -248,9 +264,17 @@ namespace Resonant.Player {
                     if (farr.Count <= 0) return null;
                     foreach (var o in farr) {
                         var jo = (JObject) o;
-                        if (!jo.ContainsKey("url")) continue;
-                        var url = jo["url"].ToString();
+                        string url;
+                        if (jo.ContainsKey("url")) {
+                            url = jo["url"].ToString();
+                        } else if (jo.ContainsKey("signatureCipher")) {
+                            url = jo["signatureCipher"].ToString();
+
+
+                        } else continue;
+
                         url = HttpUtility.UrlDecode(url).Replace("\\u0026", "&");
+                        Debug.WriteLine(url);
                         return MediaSource.CreateFromUri(new Uri(url));
                     }
 
@@ -264,7 +288,7 @@ namespace Resonant.Player {
         private JObject GetYTJSONData() {
             if (Type != MusicFileType.YouTube) return null;
             var webRequest = WebRequest.Create(@"http://youtube.com/get_video_info?video_id=" + _YoutubeID +
-                                               "&asv=2");
+                                               "&asv=2&el=detailpage");
 
             using var response = webRequest.GetResponse();
             using var content = response.GetResponseStream();
@@ -272,9 +296,26 @@ namespace Resonant.Player {
             var strContent = reader.ReadToEnd();
 
             strContent = HttpUtility.UrlDecode(strContent);
+
+            //Extract valid json
             var idx = strContent.IndexOf("{");
-            var idx2 = strContent.LastIndexOf("}");
-            if (idx > 0) {
+            if (idx != -1) {
+                var counter = 0;
+                var idx2 = idx;
+                do {
+                    switch (strContent[idx2]) {
+                        case '{':
+                            counter++;
+                            break;
+                        case '}':
+                            counter--;
+                            break;
+                    }
+
+                    idx2++;
+                } while (counter > 0 && idx2 < strContent.Length);
+
+                idx2--;
                 strContent = strContent.Substring(idx, idx2 - idx + 1);
             }
 
